@@ -6,7 +6,7 @@ design handoff in `design_handoff_sagan_beauty/` (see that folder's
 `README.md` for the full visual/behavioural spec).
 
 - **Framework**: Next.js 15 (App Router, TypeScript), React 18
-- **Database**: MySQL via Prisma
+- **Database**: PostgreSQL via Prisma (Neon on Vercel)
 - **Auth**: NextAuth (credentials provider, staff accounts only)
 - **i18n**: hand-rolled `/en` and `/de` routes (default `de`)
 - **Email**: Resend if `RESEND_API_KEY` is set, otherwise logged to the console
@@ -20,20 +20,18 @@ design handoff in `design_handoff_sagan_beauty/` (see that folder's
    ```
 
 2. Copy `.env.example` to `.env` and fill in:
-   - `DATABASE_URL` — a MySQL connection string (the default matches the Docker database below)
+   - `DATABASE_URL` / `DATABASE_URL_UNPOOLED` — Postgres connection strings (the defaults match the Docker database below)
    - `NEXTAUTH_SECRET` — random string (`openssl rand -base64 32`)
    - `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` — the first staff login, created by the seed script
    - Optionally `RESEND_API_KEY`, `EMAIL_FROM`, `SALON_NOTIFICATION_EMAIL` for real emails
 
-3. Start MySQL in Docker (MySQL 8.4 on `localhost:3306`, data kept in the `mysql-data` volume):
+3. Start Postgres in Docker (Postgres 16 on `localhost:5434`, data kept in the `postgres-data` volume):
 
    ```sh
    docker compose up -d       # stop with `docker compose down`; add `-v` to wipe the data
    ```
 
-   Credentials are `sagan` / `sagan` (root: `root`), database `sagan_beauty`. The
-   `sagan` user has global privileges so `prisma migrate dev` can create its shadow
-   database — this setup is for local development only.
+   Credentials are `sagan` / `sagan`, database `sagan_beauty`.
 
 4. Create the database schema and seed demo data:
 
@@ -87,8 +85,8 @@ middleware.ts          Locale redirect for the public site + admin auth guard
   database table — it mirrors the salon's fixed price lists from the design
   handoff and isn't meant to be edited through the admin UI (matches the
   prototype, which hardcodes it too).
-- **Booking conflicts**: MySQL has no partial/filtered unique indexes, and a
-  declined booking must free its slot for reuse — so there's no hard DB
+- **Booking conflicts**: a declined booking must free its slot for reuse, and
+  Prisma can't express a partial unique index — so there's no hard DB
   uniqueness constraint on `(date, time)`. Availability is re-checked inside a
   transaction at booking time (`lib/booking.ts`) and a conflict is surfaced as
   a friendly error in the wizard.

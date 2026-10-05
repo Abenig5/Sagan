@@ -3,8 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Direct (non-pooled) connection used by `prisma migrate`. On Vercel the Neon
+  // integration provides both; locally they are the same URL.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum BookingStatus {
@@ -52,7 +55,7 @@ model Booking {
   decidedBy  String?
 
   // No hard DB-level uniqueness on (date, time): a declined booking must free
-  // its slot for reuse, and MySQL has no partial/filtered unique indexes.
+  // its slot for reuse, and Prisma can't express a partial unique index.
   // Conflicts are instead re-checked inside a transaction at booking time
   // (see lib/booking.ts) and surfaced to the client as HTTP 409.
   @@index([date, time])
@@ -89,7 +92,7 @@ model GalleryImage {
   mime      String
   width     Int
   height    Int
-  data      Bytes       @db.LongBlob
+  data      Bytes
   createdAt DateTime    @default(now())
 
   @@index([slot, position])

@@ -1,23 +1,21 @@
 services:
   db:
-    image: mysql:8.4
-    container_name: sagan-mysql
+    image: postgres:16
+    container_name: sagan-postgres
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sagan_beauty
-      MYSQL_USER: sagan
-      MYSQL_PASSWORD: sagan
+      POSTGRES_USER: sagan
+      POSTGRES_PASSWORD: sagan
+      POSTGRES_DB: sagan_beauty
     ports:
-      - "3306:3306"
+      - "5434:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      test: ["CMD-SHELL", "pg_isready -U sagan -d sagan_beauty"]
       interval: 5s
       timeout: 5s
       retries: 20
 
 volumes:
-  mysql-data:
+  postgres-data:
