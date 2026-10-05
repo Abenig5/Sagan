@@ -6,7 +6,6 @@ import { buildHoursDisplay } from "@/lib/hours-display";
 import ContactForm from "@/components/site/ContactForm";
 import { SALON_CONTACT } from "@/lib/data/salon";
 import StoreMap from "@/components/map/StoreMap";
-import { osmLink } from "@/components/map/leaflet";
 
 export const dynamic = "force-dynamic";
 
@@ -56,7 +55,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               <a
                 className="btn btn-ghost btn-sm"
                 style={{ marginTop: 8 }}
-                href={osmLink(settings.map.lat, settings.map.lng, settings.map.zoom)}
+                href={SALON_CONTACT.mapsUrl}
                 target="_blank"
                 rel="noreferrer"
               >
