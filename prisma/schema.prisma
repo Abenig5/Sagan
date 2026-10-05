@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  declined
+}
+
+enum CategoryId {
+  women
+  men
+  kids
+  makeup
+  brows
+}
+
+enum Lang {
+  en
+  de
+}
+
+enum HeroLogo {
+  monogram
+  dark
+  script
+}
+
+/// One row per booking request made by a customer.
+model Booking {
+  id         String        @id @default(cuid())
+  ref        String        @unique // human-facing code, e.g. "SB-1041"
+  categoryId CategoryId
+  serviceId  String // references the static service catalogue (lib/data/services.ts)
+  hairLength Int? // 0 short / 1 medium / 2 long, only for length-priced services
+  date       String // YYYY-MM-DD, salon local time (Europe/Zurich)
+  time       String // HH:mm, 24h
+  name       String
+  phone      String
+  email      String
+  notes      String?       @db.Text
+  lang       Lang          @default(de)
+  status     BookingStatus @default(pending)
+  createdAt  DateTime      @default(now())
+  decidedAt  DateTime?
+  decidedBy  String?
+
+  // No hard DB-level uniqueness on (date, time): a declined booking must free
+  // its slot for reuse, and MySQL has no partial/filtered unique indexes.
+  // Conflicts are instead re-checked inside a transaction at booking time
+  // (see lib/booking.ts) and surfaced to the client as HTTP 409.
+  @@index([date, time])
+  @@index([status])
+}
+
+/// Single-row table holding the salon's opening hours and booking rules.
+/// `hours` is a 7-item array of { open, from, to }, index 0 = Sunday (matches JS Date#getDay()).
+model Settings {
+  id                     Int      @id @default(1)
+  hours                  Json
+  slotMinutes            Int      @default(30)
+  lastBeforeCloseMinutes Int      @default(60)
+  bookingWindowWeeks     Int      @default(8)
+  heroLogo               HeroLogo @default(monogram)
+  // Storefront location shown on the contact page map (OpenStreetMap). Null until set by an admin.
+  mapLat                 Float?
+  mapLng                 Float?
+  mapZoom                Int      @default(16)
+  updatedAt              DateTime @updatedAt
+}
+
+enum GallerySlot {
+  studio // home page "The studio" slideshow
+  portrait // about page portrait slideshow
+}
+
+/// A photo uploaded by an admin for one of the public slideshows. Stored in the
+/// database (not public/) so uploads survive rebuilds and work in production.
+model GalleryImage {
+  id        String      @id @default(cuid())
+  slot      GallerySlot
+  position  Int         @default(0)
+  mime      String
+  width     Int
+  height    Int
+  data      Bytes       @db.LongBlob
+  createdAt DateTime    @default(now())
+
+  @@index([slot, position])
+}
+
+/// A single time slot an admin has manually closed for booking.
+model BlockedSlot {
+  id   String @id @default(cuid())
+  date String // YYYY-MM-DD
+  time String // HH:mm
+
+  @@unique([date, time])
+  @@index([date])
+}
+
+/// An inclusive date range (e.g. holidays) during which the salon is unbookable.
+model Closure {
+  id   String @id @default(cuid())
+  from String // YYYY-MM-DD
+  to   String // YYYY-MM-DD
+  note String?
+
+  @@index([from, to])
+}
+
+/// Staff accounts allowed to sign in to the admin area.
+model StaffUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+}

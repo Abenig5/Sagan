@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMinYMin meet">
+  <!-- Page background: layered paper-cut waves flowing from the top-left corner, fading into cream -->
+  <defs>
+    <filter id="s" x="-10%" y="-10%" width="125%" height="135%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#5a3b0a" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+  <g filter="url(#s)" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5">
+    <path fill="#ede3d7" d="M0,0 H1580 C1450,90 1300,60 1100,150 C900,240 800,200 600,330 C420,450 250,420 0,560 Z"/>
+    <path fill="#e6d9cb" d="M0,0 H1450 C1300,90 1180,30 1000,120 C820,210 700,170 520,290 C360,395 200,370 0,470 Z"/>
+    <path fill="#dccbb9" d="M0,0 H1200 C1080,70 960,30 800,110 C640,190 540,160 400,250 C270,330 140,310 0,380 Z"/>
+    <path fill="#cfbaa5" d="M0,0 H950 C850,60 760,30 620,95 C490,155 400,135 290,205 C190,265 100,250 0,300 Z"/>
+    <path fill="#c3a98e" d="M0,0 H700 C620,50 540,30 440,80 C340,130 270,115 190,165 C120,205 60,200 0,225 Z"/>
+    <path fill="#b98f5f" d="M0,0 H480 C420,40 360,25 290,60 C220,95 170,90 110,120 C70,140 35,140 0,155 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMaxYMin meet">
+  <!-- Hero: richer paper-cut waves from the top-right corner, ending in a caramel edge -->
+  <defs>
+    <filter id="s" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#5a3b0a" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <g filter="url(#s)" stroke="#fff" stroke-opacity="0.35" stroke-width="1.5">
+    <path fill="#ece1d4" d="M1200,0 H150 C260,70 330,40 450,110 C580,185 640,150 760,250 C880,350 960,320 1060,430 C1110,485 1160,500 1200,520 Z"/>
+    <path fill="#e3d4c3" d="M1200,0 H420 C510,60 570,40 670,100 C780,165 830,140 920,225 C1010,310 1080,290 1140,360 C1165,390 1185,400 1200,405 Z"/>
+    <path fill="#d6c1ab" d="M1200,0 H640 C720,50 770,35 850,85 C940,140 980,125 1050,190 C1110,245 1160,240 1200,280 Z"/>
+    <path fill="#c6a787" d="M1200,0 H830 C890,40 930,30 990,70 C1060,115 1090,105 1140,150 C1170,175 1185,180 1200,190 Z"/>
+    <path fill="#b07c45" d="M1200,0 H990 C1030,30 1060,25 1100,55 C1140,85 1165,85 1200,105 Z"/>
+  </g>
+</svg>

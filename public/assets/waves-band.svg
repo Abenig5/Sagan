@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice">
+  <!-- Section bands: translucent white waves, so the motif works over any band colour -->
+  <defs>
+    <filter id="s" x="-5%" y="-30%" width="110%" height="140%">
+      <feDropShadow dx="0" dy="-4" stdDeviation="8" flood-color="#3a270d" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <g filter="url(#s)" fill="#fff">
+    <path fill-opacity="0.14" d="M0,600 V420 C250,360 420,450 700,380 C980,310 1150,380 1600,250 V600 Z"/>
+    <path fill-opacity="0.10" d="M0,600 V500 C300,450 500,520 820,460 C1100,410 1300,460 1600,380 V600 Z"/>
+    <path fill-opacity="0.10" d="M0,600 V560 C350,530 600,575 900,540 C1200,505 1400,530 1600,490 V600 Z"/>
+  </g>
+</svg>
