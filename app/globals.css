@@ -381,6 +381,9 @@ textarea.input { min-height: 110px; resize: vertical; }
 .footer-tagline { font-size: 13px; letter-spacing: 0.1em; color: var(--footer-muted); text-transform: uppercase; }
 .footer-col h6 { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--footer-muted); margin-bottom: 14px; }
 .footer-col a, .footer-col p { display: block; font-size: 14px; color: var(--footer-text); margin: 0 0 8px; }
+.footer-col a.footer-contact { display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; margin-bottom: 10px; }
+.footer-contact > span:first-child { width: 14px; flex-shrink: 0; color: var(--color-accent-300); text-align: center; }
+.footer-col a.footer-contact:hover > span:last-child { color: var(--color-accent-300); text-decoration: underline; text-underline-offset: 3px; }
 .footer-bottom {
   border-top: 1px solid color-mix(in srgb, var(--footer-text) 16%, transparent);
   padding-top: 20px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between;

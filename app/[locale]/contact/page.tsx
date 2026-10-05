@@ -4,6 +4,7 @@ import { getSettings } from "@/lib/settings";
 import { listClosures } from "@/lib/closures";
 import { buildHoursDisplay } from "@/lib/hours-display";
 import ContactForm from "@/components/site/ContactForm";
+import { SALON_CONTACT } from "@/lib/data/salon";
 import StoreMap from "@/components/map/StoreMap";
 import { osmLink } from "@/components/map/leaflet";
 
@@ -17,8 +18,8 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   const rows = [
     { icon: "⌂", k: t.cRows[0], v: t.address },
-    { icon: "☏", k: t.cRows[1], v: "+41 00 000 00 00" },
-    { icon: "@", k: t.cRows[2], v: "hello@saganbeauty.ch" },
+    { icon: "☏", k: t.cRows[1], v: SALON_CONTACT.phone },
+    { icon: "@", k: t.cRows[2], v: SALON_CONTACT.email },
   ];
 
   return (

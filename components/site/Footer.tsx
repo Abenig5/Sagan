@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PoweredBy from "@/components/PoweredBy";
+import { SALON_CONTACT } from "@/lib/data/salon";
 import type { Dictionary, Lang } from "@/lib/i18n/dictionaries";
 
 export default function Footer({ lang, t }: { lang: Lang; t: Dictionary }) {
@@ -32,9 +33,22 @@ export default function Footer({ lang, t }: { lang: Lang; t: Dictionary }) {
           </div>
           <div className="footer-col">
             <h6>{t.visitU}</h6>
-            <p>{t.address}</p>
-            <p>+41 00 000 00 00</p>
-            <p>hello@saganbeauty.ch</p>
+            <a href={SALON_CONTACT.mapsUrl} target="_blank" rel="noreferrer" className="footer-contact">
+              <span aria-hidden="true">⌂</span>
+              <span>
+                {SALON_CONTACT.street}
+                <br />
+                {SALON_CONTACT.city}
+              </span>
+            </a>
+            <a href={SALON_CONTACT.phoneHref} className="footer-contact">
+              <span aria-hidden="true">☏</span>
+              <span className="tabular-nums">{SALON_CONTACT.phone}</span>
+            </a>
+            <a href={`mailto:${SALON_CONTACT.email}`} className="footer-contact">
+              <span aria-hidden="true">@</span>
+              <span>{SALON_CONTACT.email}</span>
+            </a>
           </div>
         </div>
         <div className="footer-bottom">
