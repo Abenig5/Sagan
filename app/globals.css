@@ -296,14 +296,21 @@ textarea.input { min-height: 110px; resize: vertical; }
 .site-bg::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    url("/assets/waves-corner.svg") left top / min(1000px, 115vw) auto no-repeat,
-    url("/assets/waves-corner-br.svg") right bottom / min(900px, 80vw) auto no-repeat;
+    url("/assets/waves-corner.svg") left top / min(1100px, 70vw) auto no-repeat,
+    url("/assets/waves-corner-br.svg") right bottom / min(1000px, 75vw) auto no-repeat;
+}
+/* Phones: the hero carries its own waves at the top, so only the bottom-right waves
+   stay in the fixed layer, scaled up so they're visible behind the content. */
+@media (max-width: 760px) {
+  .site-bg::before { background: url("/assets/waves-corner-br.svg") right bottom / 150vw auto no-repeat; }
 }
 
 /* ════════════════════════════ layout: header ════════════════════════ */
 .site-header {
   position: sticky; top: 0; z-index: 40;
-  background: var(--color-bg); border-bottom: 1px solid var(--color-divider);
+  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-divider);
 }
 .site-header__row { display: flex; align-items: center; gap: 24px; padding: 14px var(--pad-x); }
 .brand { display: flex; align-items: center; gap: 12px; margin-right: auto; }
@@ -368,9 +375,12 @@ textarea.input { min-height: 110px; resize: vertical; }
 /* ── hero ───────────────────────────────────────────────────────────── */
 .hero {
   padding: 72px var(--pad-x) 64px;
-  background: url("/assets/waves-hero.svg") right top / min(1000px, 75vw) auto no-repeat, var(--color-bg);
+  /* transparent so the page's top-left waves show through; the hero adds its own top-right waves */
+  background: url("/assets/waves-hero.svg") right top / min(1100px, 72vw) auto no-repeat;
 }
-@media (max-width: 760px) { .hero { padding: 40px var(--pad-x) 48px; background-size: 60vw auto, auto; } }
+@media (max-width: 760px) {
+  .hero { padding: 150px var(--pad-x) 48px; background-size: 165vw auto; background-position: right -20px top; }
+}
 .hero__grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; max-width: var(--max-site); margin: 0 auto; }
 @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.1fr 1fr; } }
 .hero h1 { font-size: clamp(38px, 6vw, 74px); margin-bottom: 18px; }
@@ -390,6 +400,10 @@ textarea.input { min-height: 110px; resize: vertical; }
 .tagline-band { background: var(--color-beige); padding: 28px var(--pad-x); text-align: center; }
 .tagline-band span { font-family: var(--font-heading); font-size: 20px; letter-spacing: 0.26em; }
 .tagline-band .dot { color: var(--color-accent); margin: 0 14px; }
+@media (max-width: 760px) {
+  .tagline-band span { font-size: 15px; letter-spacing: 0.18em; }
+  .tagline-band .dot { margin: 0 8px; }
+}
 
 .offer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 20px; max-width: var(--max-site); margin: 0 auto; }
 .offer-card { display: flex; flex-direction: column; gap: 10px; }
@@ -619,7 +633,9 @@ textarea.input { min-height: 110px; resize: vertical; }
 
 /* ── admin login ────────────────────────────────────────────────────── */
 .login-page { min-height: 100vh; background: var(--color-beige); display: flex; align-items: center; justify-content: center; padding: 24px; }
-.login-card { width: 420px; max-width: 100%; background: var(--color-paper); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 40px; text-align: center; }
+.login-card { position: relative; width: 420px; max-width: 100%; background: var(--color-paper); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); padding: 40px; text-align: center; }
+.login-card__lang { position: absolute; top: 14px; right: 14px; }
+@media (max-width: 760px) { .login-card { padding: 48px 20px 28px; } }
 .login-card img { width: 84px; height: 84px; margin: 0 auto 16px; }
 .login-rule { width: 48px; height: 1px; background: var(--color-accent); margin: 16px auto; border: 0; }
 .login-card form { display: flex; flex-direction: column; gap: 14px; text-align: left; margin-top: 20px; }

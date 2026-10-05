@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getAdminLang } from "@/lib/i18n/server";
 import LoginForm from "@/components/admin/LoginForm";
+import LangSwitch from "@/components/admin/LangSwitch";
 import PoweredBy from "@/components/PoweredBy";
 
 export default async function AdminLoginPage() {
@@ -11,6 +12,9 @@ export default async function AdminLoginPage() {
   return (
     <div className="login-page">
       <div className="login-card">
+        <div className="login-card__lang">
+          <LangSwitch lang={lang} />
+        </div>
         <img src="/assets/monogram-mark.png" alt="Sagan Beauty" />
         <div className="brand-word">SAGAN BEAUTY</div>
         <hr className="login-rule" />
