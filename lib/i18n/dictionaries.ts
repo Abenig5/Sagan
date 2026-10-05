@@ -8,6 +8,8 @@ export const DEFAULT_LOCALE: Lang = "de";
 export interface Dictionary {
   nav: [string, string, string, string];
   bookNow: string;
+  /** Short label for the header button on phones, where space is tight. */
+  bookShort: string;
   book: string;
   langU: string;
   heroTitle: string;
@@ -213,6 +215,7 @@ export const dictionaries: Record<Lang, Dictionary> = {
   en: {
     nav: ["Home", "Services", "About us", "Contact"],
     bookNow: "Book now",
+    bookShort: "Book now",
     book: "Book",
     langU: "LANGUAGE",
     heroTitle: "A hair and beauty studio for women, men and children.",
@@ -429,6 +432,7 @@ export const dictionaries: Record<Lang, Dictionary> = {
   de: {
     nav: ["Home", "Leistungen", "Über uns", "Kontakt"],
     bookNow: "Termin buchen",
+    bookShort: "Buchen",
     book: "Buchen",
     langU: "SPRACHE",
     heroTitle: "Ein Coiffeur- und Beautystudio für Damen, Herren und Kinder.",

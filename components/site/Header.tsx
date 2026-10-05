@@ -61,7 +61,8 @@ export default function Header({ lang }: { lang: Lang }) {
         </div>
 
         <Link href={`/${lang}/book`} className="btn btn-primary">
-          {t.bookNow}
+          <span className="label-long">{t.bookNow}</span>
+          <span className="label-short">{t.bookShort}</span>
         </Link>
 
         <button
