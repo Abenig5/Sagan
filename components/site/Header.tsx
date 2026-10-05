@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getDictionary, type Lang } from "@/lib/i18n/dictionaries";
@@ -14,6 +14,21 @@ export default function Header({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
   const activeId = pathname.split("/").filter(Boolean)[1] ?? "";
 
+  // While the phone menu is open, stop the page behind it from scrolling and let Esc close it.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  useEffect(() => setOpen(false), [pathname]);
+
   const navLinks = NAV_IDS.map((id, i) => ({
     id,
     label: t.nav[i],
@@ -24,13 +39,8 @@ export default function Header({ lang }: { lang: Lang }) {
     <header className="site-header">
       <div className="site-header__row">
         <Link href={`/${lang}`} className="brand">
-          <img src="/assets/monogram-mark.png" alt="Sagan Beauty" />
-          <span>
-            <span className="brand-word" style={{ display: "block" }}>
-              SAGAN BEAUTY
-            </span>
-            <span className="brand-sub">HAIR &amp; BEAUTY STUDIO</span>
-          </span>
+          <img src="/assets/monogram-mark.png" alt="" />
+          <span className="brand-word">SAGAN BEAUTY</span>
         </Link>
 
         <nav className="main-nav">
@@ -57,6 +67,7 @@ export default function Header({ lang }: { lang: Lang }) {
         <button
           className="btn btn-icon menu-btn"
           aria-label="Menu"
+          aria-expanded={open}
           onClick={() => setOpen(true)}
         >
           ☰
@@ -64,18 +75,27 @@ export default function Header({ lang }: { lang: Lang }) {
       </div>
 
       {open && (
-        <div className="mobile-menu">
+        <div className="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="mobile-menu__top">
+            <Link href={`/${lang}`} className="brand" onClick={() => setOpen(false)}>
+              <img src="/assets/monogram-mark.png" alt="" />
+              <span className="brand-word">SAGAN BEAUTY</span>
+            </Link>
             <button className="btn btn-icon" aria-label="Close" onClick={() => setOpen(false)}>
               ✕
             </button>
           </div>
-          {navLinks.map((l) => (
-            <Link key={l.id} href={l.href} onClick={() => setOpen(false)}>
-              {l.label}
-            </Link>
-          ))}
-          <div className="lang-switch">
+          <nav className="mobile-menu__nav">
+            {navLinks.map((l) => (
+              <Link key={l.id} href={l.href} data-active={activeId === l.id} onClick={() => setOpen(false)}>
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <Link href={`/${lang}/book`} className="btn btn-primary btn-block" onClick={() => setOpen(false)}>
+            {t.bookNow}
+          </Link>
+          <div className="lang-switch" style={{ alignSelf: "flex-start" }}>
             <Link href={withLocale(pathname, "en")} data-active={lang === "en"} onClick={() => setOpen(false)}>
               EN
             </Link>
