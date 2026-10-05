@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { getDictionary, type Dictionary, type Lang } from "@/lib/i18n/dictionaries";
 import { CATEGORIES, categoryName, getService, serviceName, priceLabel, type CategoryId } from "@/lib/data/catalogue";
 import { dateLabel, dateLabelLong } from "@/lib/format";
 import { addDays, todayIso } from "@/lib/dates";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { setBookingStatus } from "@/lib/actions/bookings";
+import { useRouter } from "next/navigation";
+import PageHeader from "./PageHeader";
 
 export interface AdminBooking {
   id: string;
@@ -44,6 +46,7 @@ export default function BookingsView({
   const [adminDay, setAdminDay] = useState(todayIso());
   const [pending, startTransition] = useTransition();
   const mobile = useIsMobile();
+  const router = useRouter();
 
   const today = todayIso();
   const weekEnd = addDays(today, 7);
@@ -86,6 +89,7 @@ export default function BookingsView({
     startTransition(async () => {
       try {
         await setBookingStatus(selB.id, status);
+        router.refresh(); // updates the "waiting for a reply" badge in the sidebar
       } catch {
         setBookings(prev);
       }
@@ -103,24 +107,9 @@ export default function BookingsView({
 
   return (
     <div>
-      <div className="admin-toolbar">
-        <div>
-          <h1 style={{ margin: 0 }}>{t.bookingsTitle}</h1>
-        </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <input className="input" placeholder={t.search} value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 220 }} />
-          <div className="seg">
-            <button className="seg-opt" data-on={view === "list"} onClick={() => setView("list")}>
-              {t.list}
-            </button>
-            <button className="seg-opt" data-on={view === "day"} onClick={() => setView("day")}>
-              {t.day}
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader title={t.adminNav.bookings} description={t.bookingsDesc} />
 
-      <div className="stat-grid">
+      <div className="stat-grid stat-grid--4">
         {stats.map((s) => (
           <div key={s.k} className="stat-tile" data-accent={s.accent}>
             <div className="stat-tile__k">{s.k}</div>
@@ -129,20 +118,42 @@ export default function BookingsView({
         ))}
       </div>
 
-      <div className="filter-tabs">
-        {typeTabs.map((tab) => (
-          <button key={tab.id} className="filter-tab" data-active={fType === tab.id} onClick={() => setFType(tab.id)}>
-            {tab.label} ({byStatus.filter((b) => tab.id === "all" || b.categoryId === tab.id).length})
-          </button>
-        ))}
-      </div>
-      <div className="seg" style={{ marginBottom: 20 }}>
-        {(["all", "pending", "confirmed", "declined"] as StatusFilter[]).map((s) => (
-          <button key={s} className="seg-opt" data-on={fStatus === s} onClick={() => setFStatus(s)}>
-            {s === "all" ? t.all : t.st[s]}
-          </button>
-        ))}
-      </div>
+      <section className="admin-card filter-card" aria-label={t.filtersL}>
+        <div className="filter-card__row">
+          <input className="input filter-card__search" type="search" placeholder={t.search} value={q} onChange={(e) => setQ(e.target.value)} />
+          <div className="filter-group">
+            <span className="filter-group__label">{t.viewL}</span>
+            <div className="seg">
+              <button className="seg-opt" data-on={view === "list"} onClick={() => setView("list")}>
+                {t.list}
+              </button>
+              <button className="seg-opt" data-on={view === "day"} onClick={() => setView("day")}>
+                {t.day}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="filter-group">
+          <span className="filter-group__label">{t.statusL}</span>
+          <div className="seg">
+            {(["all", "pending", "confirmed", "declined"] as StatusFilter[]).map((s) => (
+              <button key={s} className="seg-opt" data-on={fStatus === s} onClick={() => setFStatus(s)}>
+                {s === "all" ? t.all : t.st[s]}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="filter-group">
+          <span className="filter-group__label">{t.categoryL}</span>
+          <div className="chip-row">
+            {typeTabs.map((tab) => (
+              <button key={tab.id} className="chip" data-on={fType === tab.id} onClick={() => setFType(tab.id)}>
+                {tab.label} <span className="chip__n">{byStatus.filter((b) => tab.id === "all" || b.categoryId === tab.id).length}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div className="admin-layout">
         <div className="admin-layout__main">
@@ -241,23 +252,40 @@ export default function BookingsView({
           )}
         </div>
 
-        <div className="admin-layout__aside">
-          {selB ? (
-            <DetailPanel
-              t={t}
-              lang={lang}
-              booking={selB}
-              onAccept={() => changeStatus("confirmed")}
-              onDecline={() => changeStatus("declined")}
-              onReopen={() => changeStatus("pending")}
-              onClose={() => setSelId(null)}
-              busy={pending}
-            />
-          ) : (
-            <p className="vat-note">{t.selectHint}</p>
-          )}
-        </div>
+        {!mobile && (
+          <div className="admin-layout__aside">
+            {selB ? (
+              <DetailPanel
+                t={t}
+                lang={lang}
+                booking={selB}
+                onAccept={() => changeStatus("confirmed")}
+                onDecline={() => changeStatus("declined")}
+                onReopen={() => changeStatus("pending")}
+                onClose={() => setSelId(null)}
+                busy={pending}
+              />
+            ) : (
+              <p className="times-hint">{t.selectHint}</p>
+            )}
+          </div>
+        )}
       </div>
+
+      {mobile && selB && (
+        <BottomSheet label={t.bookingDetailsL} onClose={() => setSelId(null)}>
+          <DetailPanel
+            t={t}
+            lang={lang}
+            booking={selB}
+            onAccept={() => changeStatus("confirmed")}
+            onDecline={() => changeStatus("declined")}
+            onReopen={() => changeStatus("pending")}
+            onClose={() => setSelId(null)}
+            busy={pending}
+          />
+        </BottomSheet>
+      )}
     </div>
   );
 }
@@ -298,9 +326,12 @@ function DetailPanel({
 
   return (
     <div className="detail-panel">
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div className="detail-panel__top">
         <span className="vat-note">{booking.ref}</span>
         <span className={tagClass}>{t.st[booking.status]}</span>
+        <button className="btn btn-icon detail-panel__close" onClick={onClose} aria-label={t.closeL} title={t.closeL}>
+          ✕
+        </button>
       </div>
       <h2 className="detail-panel__name">{booking.name}</h2>
       {rows.map(([k, v]) => (
@@ -331,9 +362,27 @@ function DetailPanel({
           </button>
         )}
       </div>
-      <button className="btn btn-ghost" onClick={onClose} style={{ alignSelf: "flex-start" }}>
-        ✕
-      </button>
+    </div>
+  );
+}
+
+/** Phone-only panel that slides up from the bottom with the selected booking. */
+function BottomSheet({ label, onClose, children }: { label: string; onClose: () => void; children: React.ReactNode }) {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  return (
+    <div className="sheet" role="dialog" aria-modal="true" aria-label={label}>
+      <div className="sheet__scrim" onClick={onClose} aria-hidden="true" />
+      <div className="sheet__panel">{children}</div>
     </div>
   );
 }

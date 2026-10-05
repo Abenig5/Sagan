@@ -183,6 +183,30 @@ export interface Dictionary {
   mapNotSet: string;
   mapClear: string;
   openMap: string;
+  adminMenu: string;
+  adminGroups: [string, string, string];
+  adminNav: {
+    bookings: string;
+    calendar: string;
+    closures: string;
+    photos: string;
+    location: string;
+    logo: string;
+    hours: string;
+    rules: string;
+  };
+  bookingsDesc: string;
+  pendingBadge: (n: number) => string;
+  filtersL: string;
+  statusL: string;
+  categoryL: string;
+  viewL: string;
+  weekActionsL: string;
+  calendarL: string;
+  closeL: string;
+  bookingDetailsL: string;
+  resetTitle: string;
+  resetNote: string;
 }
 
 export const dictionaries: Record<Lang, Dictionary> = {
@@ -377,6 +401,30 @@ export const dictionaries: Record<Lang, Dictionary> = {
     mapNotSet: "No location set. The contact page shows a placeholder.",
     mapClear: "Remove pin",
     openMap: "Open in map",
+    adminMenu: "Menu",
+    adminGroups: ["Bookings", "Website", "Salon"],
+    adminNav: {
+      bookings: "Bookings",
+      calendar: "Calendar",
+      closures: "Holidays & closures",
+      photos: "Photos",
+      location: "Map location",
+      logo: "Home page logo",
+      hours: "Opening hours",
+      rules: "Booking rules",
+    },
+    bookingsDesc: "All booking requests. Select one to see the details and accept or decline it.",
+    pendingBadge: (n) => (n === 1 ? "1 booking waiting for a reply" : `${n} bookings waiting for a reply`),
+    filtersL: "Filters",
+    statusL: "Status",
+    categoryL: "Category",
+    viewL: "View",
+    weekActionsL: "Quick actions",
+    calendarL: "Calendar",
+    closeL: "Close",
+    bookingDetailsL: "Booking details",
+    resetTitle: "Reset to defaults",
+    resetNote: "Restores the default opening hours, booking rules and home page logo. Bookings, photos and the map location are not affected.",
   },
   de: {
     nav: ["Home", "Leistungen", "Über uns", "Kontakt"],
@@ -569,6 +617,30 @@ export const dictionaries: Record<Lang, Dictionary> = {
     mapNotSet: "Kein Standort gesetzt. Die Kontaktseite zeigt einen Platzhalter.",
     mapClear: "Nadel entfernen",
     openMap: "In Karte öffnen",
+    adminMenu: "Menü",
+    adminGroups: ["Buchungen", "Website", "Salon"],
+    adminNav: {
+      bookings: "Buchungen",
+      calendar: "Kalender",
+      closures: "Ferien & Schliesstage",
+      photos: "Fotos",
+      location: "Kartenstandort",
+      logo: "Logo Startseite",
+      hours: "Öffnungszeiten",
+      rules: "Buchungsregeln",
+    },
+    bookingsDesc: "Alle Buchungsanfragen. Wählen Sie eine aus, um Details zu sehen und sie anzunehmen oder abzulehnen.",
+    pendingBadge: (n) => (n === 1 ? "1 Buchung wartet auf Antwort" : `${n} Buchungen warten auf Antwort`),
+    filtersL: "Filter",
+    statusL: "Status",
+    categoryL: "Kategorie",
+    viewL: "Ansicht",
+    weekActionsL: "Schnellaktionen",
+    calendarL: "Kalender",
+    closeL: "Schliessen",
+    bookingDetailsL: "Buchungsdetails",
+    resetTitle: "Standard wiederherstellen",
+    resetNote: "Stellt die Standard-Öffnungszeiten, Buchungsregeln und das Logo der Startseite wieder her. Buchungen, Fotos und Kartenstandort bleiben unverändert.",
   },
 };
 

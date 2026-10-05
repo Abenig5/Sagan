@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { getDictionary, type Lang } from "@/lib/i18n/dictionaries";
 import type { GalleryImageLite, GallerySlot } from "@/lib/gallery";
 import { deleteGalleryImage, reorderGallery } from "@/lib/actions/gallery";
 
@@ -10,15 +10,15 @@ const MAX_EDGE = 2000; // px; photos are downscaled in the browser before upload
 /** Upload, reorder and delete the photos of one public slideshow. */
 export default function GalleryManager({
   slot,
-  title,
-  t,
+  lang,
   initialImages,
 }: {
   slot: GallerySlot;
-  title: string;
-  t: Dictionary;
+  lang: Lang;
   initialImages: GalleryImageLite[];
 }) {
+  const t = getDictionary(lang);
+  const title = t.gallerySlots[slot === "studio" ? 0 : 1];
   const [images, setImages] = useState(initialImages);
   const [uploading, setUploading] = useState(0);
   const [error, setError] = useState("");

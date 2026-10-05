@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { getDictionary, type Lang } from "@/lib/i18n/dictionaries";
 import { addDays, parseIso, todayIso, type HM, type Iso } from "@/lib/dates";
@@ -8,6 +8,7 @@ import { closureCovering, daySlots, isPast, type ClosureRange } from "@/lib/avai
 import type { SalonSettings } from "@/lib/settings";
 import { categoryName, type CategoryId } from "@/lib/data/catalogue";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import PageHeader from "./PageHeader";
 import {
   addClosure,
   blockAllOpenInRange,
@@ -52,9 +53,6 @@ export default function AvailabilityView({
   const router = useRouter();
   const mobile = useIsMobile();
   const [, startTransition] = useTransition();
-  const [cFrom, setCFrom] = useState("");
-  const [cTo, setCTo] = useState("");
-  const [cNote, setCNote] = useState("");
 
   const today = todayIso();
   const closureRanges = closures;
@@ -146,22 +144,10 @@ export default function AvailabilityView({
     ? `${t.daysLong[parseIso(refDate).getDay()]}, ${shortDate(refDate, t, lang)}`
     : `${shortDate(dates[0], t, lang)} – ${shortDate(dates[6], t, lang)} ${parseIso(dates[6]).getFullYear()}`;
 
-  const canAddClosure = !!cFrom && !!cTo && cTo >= cFrom;
-  const upcomingClosures = closures.filter((c) => c.to >= today).sort((a, b) => a.from.localeCompare(b.from));
 
   return (
     <div>
-      <h1>{t.avTitle}</h1>
-      <p className="vat-note" style={{ maxWidth: 640 }}>{t.avBody}</p>
-
-      <div className="avail-toolbar">
-        <button className="btn btn-secondary btn-sm" onClick={blockAllWeek}>
-          {mobile ? t.blockAllDay : t.blockAllWeek}
-        </button>
-        <button className="btn btn-secondary btn-sm" onClick={openAllWeek}>
-          {mobile ? t.openAllDay : t.openAllWeek}
-        </button>
-      </div>
+      <PageHeader title={t.adminNav.calendar} description={t.avBody} />
 
       <div className="stat-grid">
         <div className="stat-tile" data-accent="true">
@@ -178,13 +164,24 @@ export default function AvailabilityView({
         </div>
       </div>
 
-      <div className="avail-panel-head">
-        <button className="btn btn-icon" onClick={prev}>‹</button>
-        <strong className="tabular-nums">{rangeTitle}</strong>
-        <button className="btn btn-icon" onClick={next}>›</button>
-        <button className="btn btn-secondary btn-sm" onClick={goToday}>
-          {mobile ? t.today : t.thisWeek}
-        </button>
+      <section className="admin-card avail-card">
+      <div className="avail-card__head">
+        <div className="avail-panel-head">
+          <button className="btn btn-icon" onClick={prev} aria-label="‹">‹</button>
+          <strong className="tabular-nums">{rangeTitle}</strong>
+          <button className="btn btn-icon" onClick={next} aria-label="›">›</button>
+          <button className="btn btn-secondary btn-sm" onClick={goToday}>
+            {mobile ? t.today : t.thisWeek}
+          </button>
+        </div>
+        <div className="avail-actions" role="group" aria-label={t.weekActionsL}>
+          <button className="btn btn-secondary btn-sm" onClick={blockAllWeek}>
+            {mobile ? t.blockAllDay : t.blockAllWeek}
+          </button>
+          <button className="btn btn-secondary btn-sm" onClick={openAllWeek}>
+            {mobile ? t.openAllDay : t.openAllWeek}
+          </button>
+        </div>
       </div>
 
       {mobile && (
@@ -281,62 +278,7 @@ export default function AvailabilityView({
         </div>
       </div>
 
-      <div className="settings-section" style={{ marginTop: 32 }}>
-        <h3>{t.closuresTitle}</h3>
-        <p className="settings-note">{t.closuresNote}</p>
-        <div className="closures-form">
-          <div className="field">
-            <label>{t.fromL}</label>
-            <input className="input" type="date" min={today} value={cFrom} onChange={(e) => setCFrom(e.target.value)} />
-          </div>
-          <div className="field">
-            <label>{t.toL}</label>
-            <input className="input" type="date" min={cFrom || today} value={cTo} onChange={(e) => setCTo(e.target.value)} />
-          </div>
-          <div className="field">
-            <label>{t.noteL}</label>
-            <input className="input" placeholder={t.notePh} value={cNote} onChange={(e) => setCNote(e.target.value)} />
-          </div>
-          <button
-            className="btn btn-primary"
-            disabled={!canAddClosure}
-            onClick={() => {
-              startTransition(async () => {
-                await addClosure(cFrom, cTo, cNote);
-                setCFrom("");
-                setCTo("");
-                setCNote("");
-                router.refresh();
-              });
-            }}
-          >
-            {t.addClosure}
-          </button>
-        </div>
-        {upcomingClosures.length === 0 ? (
-          <p className="vat-note">{t.noClosures}</p>
-        ) : (
-          upcomingClosures.map((c) => (
-            <div key={c.id} className="closure-row">
-              <span>
-                {c.from === c.to ? shortDate(c.from, t, lang) : `${shortDate(c.from, t, lang)} – ${shortDate(c.to, t, lang)}`}
-                {c.note ? ` · ${c.note}` : ""}
-              </span>
-              <button
-                className="btn btn-ghost"
-                onClick={() => {
-                  startTransition(async () => {
-                    await removeClosure(c.id);
-                    router.refresh();
-                  });
-                }}
-              >
-                {t.remove}
-              </button>
-            </div>
-          ))
-        )}
-      </div>
+      </section>
     </div>
   );
 }
