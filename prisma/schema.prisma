@@ -81,6 +81,9 @@ model Settings {
 enum GallerySlot {
   studio // home page "The studio" slideshow
   portrait // about page portrait slideshow
+  salon // about page photo row: the salon
+  team // about page photo row: the team
+  work // about page photo row: work examples
 }
 
 /// A photo uploaded by an admin for one of the public slideshows. Stored in the

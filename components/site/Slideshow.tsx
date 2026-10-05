@@ -16,11 +16,14 @@ export default function Slideshow({
   placeholder,
   className = "",
   label,
+  compact = false,
 }: {
   images: GalleryImageLite[];
   placeholder: string;
   className?: string;
   label: string;
+  /** Smaller controls and no counter, for the small square cards. */
+  compact?: boolean;
 }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -51,6 +54,7 @@ export default function Slideshow({
   return (
     <div
       className={`slideshow mat ${className}`}
+      data-compact={compact}
       role="region"
       aria-roledescription="carousel"
       aria-label={label}
@@ -99,9 +103,11 @@ export default function Slideshow({
             <Chevron dir="right" />
           </button>
           <div className="slideshow__footer">
-            <span className="slideshow__count tabular-nums">
-              {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-            </span>
+            {!compact && (
+              <span className="slideshow__count tabular-nums">
+                {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
+              </span>
+            )}
             <div className="slideshow__dots">
               {images.map((img, i) => (
                 <button

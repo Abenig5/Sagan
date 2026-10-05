@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 
-export type GallerySlot = "studio" | "portrait";
-export const GALLERY_SLOTS: GallerySlot[] = ["studio", "portrait"];
+export type GallerySlot = "studio" | "portrait" | "salon" | "team" | "work";
+export const GALLERY_SLOTS: GallerySlot[] = ["studio", "portrait", "salon", "team", "work"];
 
 export interface GalleryImageLite {
   id: string;

@@ -8,7 +8,12 @@ export const dynamic = "force-dynamic";
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const lang = (await params).locale as Lang;
   const t = getDictionary(lang);
-  const portraitPhotos = await listGallery("portrait");
+  const [portraitPhotos, salonPhotos, teamPhotos, workPhotos] = await Promise.all([
+    listGallery("portrait"),
+    listGallery("salon"),
+    listGallery("team"),
+    listGallery("work"),
+  ]);
 
   return (
     <div style={{ padding: "64px 0 88px" }}>
@@ -37,9 +42,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       <section className="section">
         <div className="photo-row">
-          <div className="photo-slot mat">SALON</div>
-          <div className="photo-slot mat">TEAM</div>
-          <div className="photo-slot mat">WORK EXAMPLE</div>
+          <Slideshow images={salonPhotos} placeholder="SALON" label={t.gallerySlots.salon} compact />
+          <Slideshow images={teamPhotos} placeholder="TEAM" label={t.gallerySlots.team} compact />
+          <Slideshow images={workPhotos} placeholder="WORK EXAMPLE" label={t.gallerySlots.work} compact />
         </div>
         <div style={{ textAlign: "center" }}>
           <Link href={`/${lang}/book`} className="btn btn-primary">

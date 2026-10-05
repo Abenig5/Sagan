@@ -169,7 +169,8 @@ export interface Dictionary {
   staff: string;
   galleryTitle: string;
   galleryNote: string;
-  gallerySlots: [string, string];
+  gallerySlots: Record<"studio" | "portrait" | "salon" | "team" | "work", string>;
+  galleryGroups: [string, string];
   galleryAdd: string;
   galleryUploading: (n: number) => string;
   galleryCount: (n: number) => string;
@@ -388,7 +389,14 @@ export const dictionaries: Record<Lang, Dictionary> = {
     staff: "Staff login",
     galleryTitle: "Photos",
     galleryNote: "Photos shown as slideshows on the website. They play in this order; use the arrows to reorder. Large photos are resized automatically.",
-    gallerySlots: ["Studio photo · home page", "Portrait photo · about page"],
+    gallerySlots: {
+      studio: "Studio photo",
+      portrait: "Portrait photo",
+      salon: "Salon",
+      team: "Team",
+      work: "Work examples",
+    },
+    galleryGroups: ["Home page", "About us page"],
     galleryAdd: "Add photos",
     galleryUploading: (n) => `Uploading ${n}…`,
     galleryCount: (n) => (n === 1 ? "1 photo" : `${n} photos`),
@@ -605,7 +613,14 @@ export const dictionaries: Record<Lang, Dictionary> = {
     staff: "Login für Mitarbeitende",
     galleryTitle: "Fotos",
     galleryNote: "Fotos, die auf der Website als Diashow erscheinen. Sie laufen in dieser Reihenfolge; mit den Pfeilen umsortieren. Grosse Fotos werden automatisch verkleinert.",
-    gallerySlots: ["Studiofoto · Startseite", "Porträtfoto · Über uns"],
+    gallerySlots: {
+      studio: "Studiofoto",
+      portrait: "Porträtfoto",
+      salon: "Salon",
+      team: "Team",
+      work: "Arbeitsbeispiele",
+    },
+    galleryGroups: ["Startseite", "Über uns"],
     galleryAdd: "Fotos hinzufügen",
     galleryUploading: (n) => `${n} wird hochgeladen…`,
     galleryCount: (n) => (n === 1 ? "1 Foto" : `${n} Fotos`),

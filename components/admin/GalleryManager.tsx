@@ -18,7 +18,7 @@ export default function GalleryManager({
   initialImages: GalleryImageLite[];
 }) {
   const t = getDictionary(lang);
-  const title = t.gallerySlots[slot === "studio" ? 0 : 1];
+  const title = t.gallerySlots[slot];
   const [images, setImages] = useState(initialImages);
   const [uploading, setUploading] = useState(0);
   const [error, setError] = useState("");
