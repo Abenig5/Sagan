@@ -14,3 +14,7 @@ next-env.d.ts
 .vercel
 .env*
 !.env.example
+
+# tooling installed by Vercel integrations
+.agents/
+skills-lock.json
